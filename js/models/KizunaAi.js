@@ -84,13 +84,13 @@ function KizunaAi () {
 			reflectivity: 0.0,
 			metalness: 0.0
 		});
-		this.hair1 = new THREE.MeshPhysicalMaterial 
+		this.hair1 = new THREE.MeshBasicMaterial 
 		({
 			map: textures.hair1, 
 			transparent: true,
-			roughness: 1.0,
-			reflectivity: 0.0,
-			metalness: 0.0
+			// roughness: 1.0,
+			// reflectivity: 0.0,
+			// metalness: 0.0
 		});
 		this.hair2 = new THREE.MeshPhysicalMaterial 
 		({
