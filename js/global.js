@@ -94,6 +94,8 @@ function initEventListeners () {
 	window.addEventListener ('keyup', onKeyUpEvent, false);
 	window.addEventListener ('resize', onWindowResizeEvent, false);
 	window.addEventListener ('click', mouseClickEvent, false);
+	window.addEventListener ('mousewheel', mouseScrollEvent, false);
+	window.addEventListener ('DOMMouseScroll', mouseScrollEvent, false);
 
 	document.addEventListener ('pointerlockchange', pointerLockChangedEvent, false);
 	document.addEventListener ('mozpointerlockchange', pointerLockChangedEvent, false);

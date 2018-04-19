@@ -75,3 +75,10 @@ function mouseMoveEvent (e) {
 	player.rotate (x, y);
 	
 }
+
+function mouseScrollEvent (e) {
+	if (!pointerLockActivated || player === undefined)
+		return;
+
+	player.zoom (e.wheelDelta);
+}
