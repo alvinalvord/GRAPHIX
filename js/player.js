@@ -10,7 +10,7 @@ var Player = function () {
 	this.modelCameraDistance = new THREE.Vector3 (1, 4, 3);
 	
 	this.velocityDecay = 1;
-	this.translationFactor = 1600;
+	this.translationFactor = 600;
 	this.rotationFactor = 0.0007;
 	this.velocity = new THREE.Vector3 ();
 	this.move = {
@@ -18,9 +18,19 @@ var Player = function () {
 		backward: 0,
 		left: 0,
 		right: 0,
-		peek: {left: 0, right: 0},
-		jump: 0
+		peek: {left: 0, right: 0}
 	};
+	this.can = {
+		jump: true,
+		peek: {left: true, right: true}
+	};
+	this.mass = 10.0;
+	
+	this.walk;
+	this.idle;
+	this.jumpani;
+	this.mixer;
+	this.raycaster = new THREE.Raycaster (new THREE.Vector3 (), new THREE.Vector3 (0, -1, 0), 0, 1);
 	
 	this.init = function () {
 		this.model.position.set (0, 0, 0);
@@ -75,19 +85,62 @@ var Player = function () {
 		
 	}
 	
+	this.jump = function () {
+		if (this.can.jump === true && this.modelYaw.position.y === 0) {
+			this.velocity.y += 20;
+			this.can.jump = false;
+			
+			this.mixer.clipAction (this.idle).stop ();
+			this.mixer.clipAction (this.jumpani).setDuration (0.1).play ();
+		}
+	}
+	
 	this.animate = function (time) {
 		this.velocity.x = 
 			((this.velocity.x * this.velocityDecay)
 			- ((this.move.left - this.move.right) * this.translationFactor))
 			* time.delta * time.delta;
-			
+		
 		this.velocity.z = 
 			((this.velocity.z * this.velocityDecay)
 			- ((this.move.forward - this.move.backward) * this.translationFactor))
 			* time.delta * time.delta;
 			
+		this.raycaster.ray.origin.copy (this.modelYaw.position);
+		
+		this.velocity.y += Gravity * this.mass * time.delta;
+		var f = [];
+		f.push (floor);
+		
+		if (this.raycaster.intersectObjects (f).length > 0) {
+			this.velocity.y = Math.max (0, this.velocity.y);
+			this.can.jump = true;
+			this.mixer.clipAction (this.jumpani).stop ();
+			this.mixer.clipAction (this.idle).setDuration (10).play ();
+		}
+		
 		this.modelYaw.translateX (this.velocity.x);	
+		this.modelYaw.translateY (this.velocity.y);
 		this.modelYaw.translateZ (this.velocity.z);
+		
+		if (this.modelYaw.position.y < 0) {
+			this.modelYaw.position.y = 0;
+			this.velocity.y = 0;
+			this.can.jump = true;
+			this.mixer.clipAction (this.jumpani).stop ()
+			this.mixer.clipAction (this.idle).setDuration (10).play ();
+		}
+	
+		if (this.move.forward || this.move.backward || this.move.left || this.move.right) {
+			this.mixer.clipAction (this.idle).stop ();
+			this.mixer.clipAction (this.walk).play ();
+		}
+		else {
+			this.mixer.clipAction (this.walk).stop ();
+			this.mixer.clipAction (this.idle).setDuration (10).play ();
+		}
+		
+		this.mixer.update (time.delta);
 	}
 	
 	

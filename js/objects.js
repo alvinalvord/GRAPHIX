@@ -1,9 +1,14 @@
 function createFloor () {
+	let loader = new THREE.TextureLoader ();
+	var grass = loader.load ('textures/grass.jpg');
+	grass.wrapS = grass.wrapT = THREE.RepeatWrapping;
+	grass.repeat.set (256, 256);
+	grass.anisotropy = 16;
 	var f = new THREE.Mesh (
-		new THREE.BoxGeometry (1000, 1000, 5),
+		new THREE.CylinderGeometry (600, 600, 5, 128, 128),
 		new THREE.MeshPhysicalMaterial (
 			{
-				color: 0x99d15e,
+				map: grass,
 				side: THREE.DoubleSide,
 				roughness: 1.0,
 				reflectivity: 0.0,
@@ -13,17 +18,7 @@ function createFloor () {
 	);
 
 	f.position.y = -2.5;
-	f.rotation.x = -PI_2;
 	f.receiveShadow = true;
-	
-	// var a = new THREE.Object3D ();
-	
-	// a.add (f);
-	
-	// var b = new THREE.Mesh (new THREE.BoxGeometry (10,10,1), new THREE.MeshPhysicalMaterial ({color: 0xff0000, side: THREE.DoubleSide}));
-	// a.add (b);
-	// b.position.y = -0.49;
-	// b.rotation.x = PI_2;
 	
 	return f;
 }
@@ -112,3 +107,61 @@ function createStars () {
 	
 	return stars;
 }
+
+function createTrees () {
+	let loader = new THREE.JSONLoader ();
+	loader.load (
+		'json/model/tree.json',
+		function (geometry, materials) {
+			var t = new THREE.Mesh (
+				geometry, 
+				materials
+			);
+			t.scale.multiplyScalar (30);
+			t.position.set (0, 0, -400);
+	
+			scene.add (t);
+			
+			for (var i = 0; i < 50; i++) {
+				t = new THREE.Mesh (
+					geometry, 
+					materials
+				);
+				t.scale.multiplyScalar (Math.random () * 5);
+				while (Math.abs (t.position.x) + Math.abs (t.position.z) < 50) {
+					t.position.set (Math.random () * 600 - 300, 0, Math.random () * 600 - 300);
+				}
+				scene.add (t);
+			}
+		}
+	);
+}
+
+function createMeteor () {
+	var g = new THREE.SphereGeometry (5, 32, 32);
+	var m = new THREE.MeshPhysicalMaterial ({
+		color: 0xf43054,
+		side: THREE.DoubleSide,
+		roughness: 1.0,
+		reflectivity: 0.0,
+		metalness: 0.0
+	});
+	
+	var me = new THREE.Mesh (g, m);
+	me.position.set (Math.random () * 600 - 300, 1000, Math.random () * 600 -300);
+	
+	scene.add (me);
+	meteors.push (me);
+}
+
+function updateMeteors () {
+	for (var i = 0; i < meteors.length; i++) {
+		meteors[i].translateY (Gravity * 10 * time.delta);
+		// console.log (meteors[0].position.y);
+		if (meteors[i].position.y < -100) {
+			scene.remove (meteors[i]);
+		}
+	}
+}
+
+

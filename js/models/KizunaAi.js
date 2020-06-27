@@ -5,7 +5,7 @@ function KizunaAi () {
 	this.init = function (obj, fn, textureModifier = 'Basic') {
 		let loader = new THREE.JSONLoader ();
 		loader.load (
-			KizunaAiPath + 'kizunaai.json',
+			KizunaAiPath + 'kizunaaiall.json',
 			function (geometry, materials) {
 				obj.model = new THREE.Mesh (
 					geometry,
@@ -13,6 +13,19 @@ function KizunaAi () {
 				);
 				
 				obj.model.receiveShadow = true;
+				
+				obj.mixer = new THREE.AnimationMixer (obj.model);
+				
+				obj.walk = THREE.AnimationClip.CreateFromMorphTargetSequence ('walk', geometry.morphTargets, 60);
+				obj.idle = THREE.AnimationClip.CreateFromMorphTargetSequence ('idle', geometry.morphTargets, 60);
+				obj.jumpani = THREE.AnimationClip.CreateFromMorphTargetSequence ('jump', geometry.morphTargets, 60);
+
+				obj.walk.tracks.splice (41, 60);
+				obj.idle.tracks.splice (81, 20);
+				obj.idle.tracks.splice (0, 41);
+				obj.jumpani.tracks.splice (0, 82);
+				
+				obj.mixer.clipAction (obj.idle).play ();
 				
 				fn ();
 			}
@@ -58,7 +71,8 @@ function KizunaAi () {
 			transparent: true,
 			roughness: 1.0,
 			reflectivity: 0.0,
-			metalness: 0.0
+			metalness: 0.0,
+			morphTargets: true
 		});
 		this.eye = new THREE.MeshPhysicalMaterial 
 		({
@@ -66,7 +80,8 @@ function KizunaAi () {
 			transparent: true,
 			roughness: 1.0,
 			reflectivity: 0.0,
-			metalness: 0.0
+			metalness: 0.0,
+			morphTargets: true
 		});
 		this.eye2 = new THREE.MeshPhysicalMaterial 
 		({
@@ -74,7 +89,8 @@ function KizunaAi () {
 			transparent: true,
 			roughness: 1.0,
 			reflectivity: 0.0,
-			metalness: 0.0
+			metalness: 0.0,
+			morphTargets: true
 		});
 		this.face = new THREE.MeshPhysicalMaterial 
 		({
@@ -82,15 +98,17 @@ function KizunaAi () {
 			transparent: true,
 			roughness: 1.0,
 			reflectivity: 0.0,
-			metalness: 0.0
+			metalness: 0.0,
+			morphTargets: true
 		});
-		this.hair1 = new THREE.MeshBasicMaterial 
+		this.hair1 = new THREE.MeshPhysicalMaterial 
 		({
 			map: textures.hair1, 
 			transparent: true,
-			// roughness: 1.0,
-			// reflectivity: 0.0,
-			// metalness: 0.0
+			roughness: 1.0,
+			reflectivity: 0.0,
+			metalness: 0.0,
+			morphTargets: true
 		});
 		this.hair2 = new THREE.MeshPhysicalMaterial 
 		({
@@ -98,7 +116,8 @@ function KizunaAi () {
 			transparent: true,
 			roughness: 1.0,
 			reflectivity: 0.0,
-			metalness: 0.0
+			metalness: 0.0,
+			morphTargets: true
 		});
 		this.tops = new THREE.MeshPhysicalMaterial 
 		({
@@ -106,7 +125,8 @@ function KizunaAi () {
 			transparent: true,
 			roughness: 1.0,
 			reflectivity: 0.0,
-			metalness: 0.0
+			metalness: 0.0,
+			morphTargets: true
 		});
 	}
 

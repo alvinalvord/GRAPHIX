@@ -12,7 +12,7 @@ function onKeyDownEvent (e) {
 		break;
 		case 69: player.move.peek.right = 1;
 		break;
-		case 32: player.move.jump = 1;
+		case 32: player.jump ();
 		break;
 		case 18: e.preventDefault ();
 	}
@@ -31,8 +31,6 @@ function onKeyUpEvent (e) {
 		case 81: player.move.peek.left = 0;
 		break;
 		case 69: player.move.peek.right = 0;
-		break;
-		case 32: player.move.jump = 0;
 		break;
 	}
 }

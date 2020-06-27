@@ -5,10 +5,12 @@ var renderer;
 var ambientLight;
 var sun = {};
 var sky;
+var trees;
 
 // game vars
 var player;
 var floor;
+var meteors = [];
 
 // pointer lock vars
 var pointerLockAvailable = true;
@@ -26,7 +28,7 @@ var time = {
 
 // constants
 const PI_2 = Math.PI / 2;
-const Gravity = 9.8;
+const Gravity = -9.8;
 
 function globalInit () {
 	pointerLockControlCheck ();
@@ -87,6 +89,8 @@ function initGameVars () {
 	
 	stars = createStars ();
 	scene.add (stars);
+	
+	createTrees ();
 }
 
 function initEventListeners () {
