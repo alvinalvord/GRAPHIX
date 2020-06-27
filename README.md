@@ -1,6 +1,8 @@
 # Final output for GRAPHIX
 
+I can't upload two files lmao
+
 ## To run
-1. npm install http-server -g
-2. http-server . -p 8000
-3. 127.0.0.1:8000
+- npm install http-server -g
+- http-server . -p 8000
+- 127.0.0.1:8000
